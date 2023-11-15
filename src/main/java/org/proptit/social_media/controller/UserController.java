@@ -1,9 +1,11 @@
 package org.proptit.social_media.controller;
 
 import org.proptit.social_media.base.BaseResponse;
+import org.proptit.social_media.base.Pagination;
 import org.proptit.social_media.dto.UserInputDto;
 import org.proptit.social_media.dto.UserOutputDto;
 import org.proptit.social_media.service.UserService;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,8 +30,8 @@ public class UserController {
     }
 
     @GetMapping
-    BaseResponse<List<UserOutputDto>> getAllUser() {
-        return BaseResponse.success(userService.getAllUser());
+    BaseResponse<Pagination<UserOutputDto>> getAllUser(Pageable pageable) {
+        return BaseResponse.success(userService.getAllUser(pageable));
     }
 
     @PutMapping("/{id}")
