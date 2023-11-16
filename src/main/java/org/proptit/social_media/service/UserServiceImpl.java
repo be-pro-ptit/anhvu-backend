@@ -1,5 +1,6 @@
 package org.proptit.social_media.service;
 
+import org.proptit.social_media.base.LoadMore;
 import org.proptit.social_media.base.Pagination;
 import org.proptit.social_media.dto.UserInputDto;
 import org.proptit.social_media.dto.UserOutputDto;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -24,9 +26,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserOutputDto getUserById(Long id) {
-        UserEntity userEntity = userRepository.findByUserId(id);
-        if (userEntity == null) throw new NotFoundException("User not found");
-        return userMapper.getUserOutputDtoFromUserEntity(userEntity);
+        Optional<UserEntity> userEntity = userRepository.findByUserId(id);
+        if (userEntity.isEmpty()) throw new NotFoundException("User not found");
+        return userMapper.getUserOutputDtoFromUserEntity(userEntity.get());
     }
 
     @Override
@@ -50,11 +52,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserOutputDto updateUser(Long id, UserInputDto userInputDto) {
-        UserEntity userEntity = userRepository.findByUserId(id);
-        if (userEntity == null) throw new NotFoundException("User not found");
-        userEntity = userMapper.getUserEntityFromUserInputDto(userInputDto);
-        userEntity.setUserId(id);
-        return userMapper.getUserOutputDtoFromUserEntity(userRepository.save(userEntity));
+        Optional<UserEntity> userEntity = userRepository.findByUserId(id);
+        if (userEntity.isEmpty()) throw new NotFoundException("User not found");
+        UserEntity newUserEntity = userMapper.getUserEntityFromUserInputDto(userInputDto);
+        newUserEntity.setUserId(id);
+        return userMapper.getUserOutputDtoFromUserEntity(userRepository.save(newUserEntity));
     }
 
     @Override
@@ -65,5 +67,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteAllUserByIds(List<Long> ids) {
         userRepository.deleteAllByUserIdIn(ids);
+    }
+
+    @Override
+    public LoadMore<UserOutputDto> getAllUser(Long lastId, int limit) {
+        LoadMore<UserOutputDto> loadMore = new LoadMore<>();
+        List<UserEntity> userEntities = userRepository.findAllAfterId(lastId, Pageable.ofSize(limit));
+        if (userEntities.isEmpty()) return loadMore.setLimit(limit)
+                                                   .setLastId(lastId)
+                                                   .setElements(List.of());
+        loadMore.setElements(userEntities.stream()
+                                         .map(userMapper::getUserOutputDtoFromUserEntity)
+                                         .toList())
+                .setLastId(userEntities.get(userEntities.size() - 1)
+                                       .getUserId())
+                .setLimit(limit);
+        return loadMore;
     }
 }

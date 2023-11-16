@@ -1,5 +1,6 @@
 package org.proptit.social_media.service;
 
+import org.proptit.social_media.base.LoadMore;
 import org.proptit.social_media.base.Pagination;
 import org.proptit.social_media.dto.UserInputDto;
 import org.proptit.social_media.dto.UserOutputDto;
@@ -19,4 +20,6 @@ public interface UserService {
     void deleteUser(Long id);
 
     void deleteAllUserByIds(List<Long> ids);
+
+    LoadMore<UserOutputDto> getAllUser(Long lastId, int limit);
 }

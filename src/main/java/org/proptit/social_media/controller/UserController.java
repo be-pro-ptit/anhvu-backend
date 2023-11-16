@@ -1,6 +1,7 @@
 package org.proptit.social_media.controller;
 
 import org.proptit.social_media.base.BaseResponse;
+import org.proptit.social_media.base.LoadMore;
 import org.proptit.social_media.base.Pagination;
 import org.proptit.social_media.dto.UserInputDto;
 import org.proptit.social_media.dto.UserOutputDto;
@@ -32,6 +33,10 @@ public class UserController {
     @GetMapping
     BaseResponse<Pagination<UserOutputDto>> getAllUser(Pageable pageable) {
         return BaseResponse.success(userService.getAllUser(pageable));
+    }
+    @GetMapping("/load-more")
+    BaseResponse<LoadMore<UserOutputDto>> getAllUser(@RequestParam Long lastId, @RequestParam int limit) {
+        return BaseResponse.success(userService.getAllUser(lastId, limit));
     }
 
     @PutMapping("/{id}")
