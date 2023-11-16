@@ -1,0 +1,1 @@
+CREATE INDEX users_index_user_id ON public.users (user_id)
