@@ -3,9 +3,9 @@ package org.proptit.social_media.controller;
 import org.proptit.social_media.base.BaseResponse;
 import org.proptit.social_media.base.LoadMore;
 import org.proptit.social_media.base.Pagination;
-import org.proptit.social_media.dto.UserInputDto;
-import org.proptit.social_media.dto.UserOutputDto;
-import org.proptit.social_media.service.UserService;
+import org.proptit.social_media.dto.user.UserInputDto;
+import org.proptit.social_media.dto.user.UserOutputDto;
+import org.proptit.social_media.service.user.UserService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 

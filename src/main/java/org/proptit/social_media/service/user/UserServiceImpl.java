@@ -1,9 +1,9 @@
-package org.proptit.social_media.service;
+package org.proptit.social_media.service.user;
 
 import org.proptit.social_media.base.LoadMore;
 import org.proptit.social_media.base.Pagination;
-import org.proptit.social_media.dto.UserInputDto;
-import org.proptit.social_media.dto.UserOutputDto;
+import org.proptit.social_media.dto.user.UserInputDto;
+import org.proptit.social_media.dto.user.UserOutputDto;
 import org.proptit.social_media.entity.UserEntity;
 import org.proptit.social_media.exeption.NotFoundException;
 import org.proptit.social_media.repository.UserRepository;
@@ -35,10 +35,9 @@ public class UserServiceImpl implements UserService {
     public Pagination<UserOutputDto> getAllUser(Pageable pageable) {
         Pagination<UserOutputDto> pagination = new Pagination<>();
         Page<UserEntity> userEntities = userRepository.findAll(pageable);
-        pagination.setElements(userRepository.findAll()
-                                             .stream()
-                                             .map(userMapper::getUserOutputDtoFromUserEntity)
-                                             .toList())
+        pagination.setElements(userEntities.stream()
+                                           .map(userMapper::getUserOutputDtoFromUserEntity)
+                                           .toList())
                   .setTotalElement(userEntities.getTotalElements())
                   .setTotalPage(userEntities.getTotalPages())
                   .setPage(pageable.getPageNumber());

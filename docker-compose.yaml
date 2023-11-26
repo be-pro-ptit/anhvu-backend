@@ -1,0 +1,21 @@
+version: '3.9'
+services:
+  db:
+    image: postgresql_image:latest
+    restart: always
+    container_name: postgresql
+    healthcheck:
+      test: [ "CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  app:
+    image: social_media_image:latest
+    #    restart: always
+    container_name: social_media
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - 8080:8080

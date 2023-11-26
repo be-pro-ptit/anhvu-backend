@@ -1,9 +1,9 @@
-package org.proptit.social_media.service;
+package org.proptit.social_media.service.user;
 
 import org.proptit.social_media.base.LoadMore;
 import org.proptit.social_media.base.Pagination;
-import org.proptit.social_media.dto.UserInputDto;
-import org.proptit.social_media.dto.UserOutputDto;
+import org.proptit.social_media.dto.user.UserInputDto;
+import org.proptit.social_media.dto.user.UserOutputDto;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

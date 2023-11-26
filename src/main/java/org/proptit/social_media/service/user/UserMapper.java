@@ -1,8 +1,8 @@
-package org.proptit.social_media.service;
+package org.proptit.social_media.service.user;
 
 import org.mapstruct.Mapper;
-import org.proptit.social_media.dto.UserInputDto;
-import org.proptit.social_media.dto.UserOutputDto;
+import org.proptit.social_media.dto.user.UserInputDto;
+import org.proptit.social_media.dto.user.UserOutputDto;
 import org.proptit.social_media.entity.UserEntity;
 
 @Mapper(componentModel = "spring")
