@@ -2,6 +2,7 @@ package org.proptit.social_media.utils.handle_exception;
 
 import org.proptit.social_media.base.BaseResponse;
 import org.proptit.social_media.base.Status;
+import org.proptit.social_media.exeption.IncorrectPasswordException;
 import org.proptit.social_media.exeption.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,5 +15,17 @@ public class APIExceptionHandler {
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public BaseResponse handleNotFoundException(NotFoundException e) {
         return BaseResponse.error(new Status("404", e.getMessage()));
+    }
+
+    @ExceptionHandler(value = IncorrectPasswordException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public BaseResponse handleIncorrectPasswordException(IncorrectPasswordException e) {
+        return BaseResponse.error(new Status("400", e.getMessage()));
+    }
+
+    @ExceptionHandler(value = Exception.class)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    public BaseResponse handleException(Exception e) {
+        return BaseResponse.error(new Status("500", e.getMessage()));
     }
 }

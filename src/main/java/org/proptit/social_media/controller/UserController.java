@@ -1,5 +1,6 @@
 package org.proptit.social_media.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.proptit.social_media.base.BaseResponse;
 import org.proptit.social_media.base.LoadMore;
 import org.proptit.social_media.base.Pagination;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+@SecurityRequirement(name = "Bearer authentication")
 public class UserController {
     private final UserService userService;
 

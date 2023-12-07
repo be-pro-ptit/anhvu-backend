@@ -1,72 +1,59 @@
 package org.proptit.social_media.filter;
 
-
 import com.google.gson.Gson;
 import io.jsonwebtoken.ExpiredJwtException;
-import jakarta.servlet.*;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.proptit.social_media.base.BaseResponse;
-import org.proptit.social_media.base.Status;
+import org.proptit.social_media.entity.AccountEntity;
+import org.proptit.social_media.entity.UserEntity;
+import org.proptit.social_media.exeption.NotFoundException;
+import org.proptit.social_media.repository.UserRepository;
 import org.proptit.social_media.service.jwt.JwtService;
-import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
 @Component
-@Order(1)
-public class AuthFilter implements Filter {
-
-    private Gson gson;
+public class AuthFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
+    private final UserRepository userRepository;
+    private final UserDetailsService userDetailsService;
 
-    public AuthFilter(JwtService jwtService) {
+    public AuthFilter(JwtService jwtService, UserRepository userRepository, UserDetailsService userDetailsService) {
         this.jwtService = jwtService;
+        this.userRepository = userRepository;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
-    public void init(FilterConfig filterConfig) {
-        gson = new Gson();
-    }
-
-    @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest rq = (HttpServletRequest) servletRequest;
-        HttpServletResponse rp = (HttpServletResponse) servletResponse;
-        String url = rq.getRequestURI();
-        if (url.startsWith("/api/auth")) {
-            filterChain.doFilter(rq, rp);
-            return;
-        } else if (url.startsWith("/api")) {
-            String accessToken = rq.getHeader("Authorization");
-            if (accessToken == null || !accessToken.startsWith("Bearer")) {
-                rp.setStatus(401);
-                rp.getWriter()
-                  .print(gson.toJson(BaseResponse.error(new Status("unauthorized", "Chưa đăng nhập"))));
-                rp.setHeader("Content-Type", "application/json");
-                return;
-            } else {
-                try {
-                    jwtService.validateAccessToken(accessToken.substring(7));
-                } catch (ExpiredJwtException expiredJwtException) {
-                    rp.setStatus(401);
-                    rp.getWriter()
-                      .print(gson.toJson(BaseResponse.error(new Status("expired", "Token hết hạn"))));
-                    rp.setHeader("Content-Type", "application/json");
-                    return;
-                } catch (Exception e) {
-                    rp.setStatus(401);
-                    rp.getWriter()
-                      .print(gson.toJson(BaseResponse.error(new Status("invalid", "Token không hợp lệ"))));
-                    rp.setHeader("Content-Type", "application/json");
-                    return;
-                }
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        try {
+            String authorization = request.getHeader("Authorization");
+            if (authorization != null && authorization.startsWith("Bearer ")) {
+                String token = authorization.substring(7);
+                jwtService.validateAccessToken(token);
+                AccountEntity accountEntity = jwtService.getAccountFromAccessToken(token);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(accountEntity.getUsername());
+                UserEntity userEntity = userRepository.findByUserId(accountEntity.getUserId())
+                                                      .orElseThrow(() -> new NotFoundException("User not found"));
+                Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, userEntity, userDetails.getAuthorities());
+                SecurityContextHolder.getContext()
+                                     .setAuthentication(authentication);
             }
-            filterChain.doFilter(rq, rp);
-            return;
+            filterChain.doFilter(request, response);
+        } catch (ExpiredJwtException expiredJwtException) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter()
+                    .write(new Gson().toJson("Token is expired"));
         }
-        filterChain.doFilter(servletRequest, servletResponse);
     }
 
     @Override
