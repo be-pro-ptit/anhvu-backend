@@ -2,6 +2,7 @@ package org.proptit.social_media.service.user;
 
 import org.proptit.social_media.base.LoadMore;
 import org.proptit.social_media.base.Pagination;
+import org.proptit.social_media.dto.user.SimpleUserOutputDto;
 import org.proptit.social_media.dto.user.UserInputDto;
 import org.proptit.social_media.dto.user.UserOutputDto;
 import org.proptit.social_media.entity.UserEntity;
@@ -82,5 +83,11 @@ public class UserServiceImpl implements UserService {
                                        .getUserId())
                 .setLimit(limit);
         return loadMore;
+    }
+
+    @Override
+    public SimpleUserOutputDto getSimpleUserById(Long id) {
+        Optional<UserEntity> userEntity = userRepository.findByUserId(id);
+        return userMapper.getSimpleUserOutputDtoFromUserEntity(userEntity.orElseThrow(() -> new NotFoundException("User not found")));
     }
 }

@@ -2,6 +2,7 @@ package org.proptit.social_media.service.user;
 
 import org.proptit.social_media.base.LoadMore;
 import org.proptit.social_media.base.Pagination;
+import org.proptit.social_media.dto.user.SimpleUserOutputDto;
 import org.proptit.social_media.dto.user.UserInputDto;
 import org.proptit.social_media.dto.user.UserOutputDto;
 import org.springframework.data.domain.Pageable;
@@ -22,4 +23,6 @@ public interface UserService {
     void deleteAllUserByIds(List<Long> ids);
 
     LoadMore<UserOutputDto> getAllUser(Long lastId, int limit);
+
+    SimpleUserOutputDto getSimpleUserById(Long id);
 }

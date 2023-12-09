@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import java.sql.Time;
+import java.sql.Timestamp;
 
 @Data
 @NoArgsConstructor
@@ -21,5 +21,5 @@ public class PostEntity {
     private String content;
     @Column(name = "user_id")
     private Long userId;
-    private Time timestamp;
+    private Timestamp timestamp;
 }
