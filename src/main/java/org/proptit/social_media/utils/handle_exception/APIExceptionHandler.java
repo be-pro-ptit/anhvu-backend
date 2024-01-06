@@ -2,6 +2,8 @@ package org.proptit.social_media.utils.handle_exception;
 
 import org.proptit.social_media.base.BaseResponse;
 import org.proptit.social_media.base.Status;
+import org.proptit.social_media.exeption.ExistsException;
+import org.proptit.social_media.exeption.ForbiddenException;
 import org.proptit.social_media.exeption.IncorrectPasswordException;
 import org.proptit.social_media.exeption.NotFoundException;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,18 @@ public class APIExceptionHandler {
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public BaseResponse handleIncorrectPasswordException(IncorrectPasswordException e) {
         return BaseResponse.error(new Status("400", e.getMessage()));
+    }
+
+    @ExceptionHandler(value = ForbiddenException.class)
+    @ResponseStatus(value = HttpStatus.FORBIDDEN)
+    public BaseResponse handleForbiddenException(ForbiddenException e) {
+        return BaseResponse.error(new Status("403", e.getMessage()));
+    }
+
+    @ExceptionHandler(value = ExistsException.class)
+    @ResponseStatus(value = HttpStatus.CONFLICT)
+    public BaseResponse handleForbiddenException(ExistsException e) {
+        return BaseResponse.error(new Status("409", e.getMessage()));
     }
 
     @ExceptionHandler(value = Exception.class)
