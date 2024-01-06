@@ -3,18 +3,17 @@ package org.proptit.social_media.controller;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.proptit.social_media.base.BaseResponse;
 import org.proptit.social_media.base.Pagination;
+import org.proptit.social_media.base.RequiredAuthController;
 import org.proptit.social_media.dto.post.PostInputDto;
 import org.proptit.social_media.dto.post.PostOutputDto;
-import org.proptit.social_media.entity.UserEntity;
 import org.proptit.social_media.service.post.PostService;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/post")
 @SecurityRequirement(name = "Bearer authentication")
-public class PostController {
+public class PostController extends RequiredAuthController {
 
     private final PostService postService;
 
@@ -52,11 +51,4 @@ public class PostController {
     BaseResponse<Pagination<PostOutputDto>> getListPost(Pageable pageable) {
         return BaseResponse.success(postService.getListPost(pageable));
     }
-
-    private UserEntity getUserEntityFromContext() {
-        return (UserEntity) SecurityContextHolder.getContext()
-                                                 .getAuthentication()
-                                                 .getCredentials();
-    }
-
 }

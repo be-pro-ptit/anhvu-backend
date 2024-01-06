@@ -15,11 +15,6 @@ public interface FriendshipRepository extends JpaRepository<FriendshipEntity, Lo
     Boolean existsByOtherId1AndOtherId2(Long otherId1, Long otherId2);
 
     @Query(value = "SELECT fs FROM FriendshipEntity fs WHERE "
-            + "fs.otherId1 = :mySelf OR fs.otherId2 = :mySelf")
-    Page<FriendshipEntity> getFriendshipEntitiesByMySelf(Long mySelf, Pageable pageable);
-
-    @Query(value = "SELECT COUNT(fs) > 0 FROM FriendshipEntity fs WHERE "
-            + "(fs.otherId1 = :otherId1 AND fs.otherId2 = :otherId2) OR "
-            + "(fs.otherId1 = :otherId2 AND fs.otherId2 = :otherId1)")
-    Boolean existsFriend(Long otherId1, Long otherId2);
+            + "fs.otherId1 = :userId OR fs.otherId2 = :userId")
+    Page<FriendshipEntity> getFriendshipEntitiesByUser(Long userId, Pageable pageable);
 }

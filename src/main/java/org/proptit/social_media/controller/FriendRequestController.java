@@ -2,18 +2,17 @@ package org.proptit.social_media.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.proptit.social_media.base.Pagination;
+import org.proptit.social_media.base.RequiredAuthController;
 import org.proptit.social_media.dto.friendrequest.FriendRequestInputDto;
 import org.proptit.social_media.dto.friendrequest.FriendRequestOutputDto;
-import org.proptit.social_media.entity.UserEntity;
 import org.proptit.social_media.service.friend_request.FriendRequestService;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/friend-request")
 @SecurityRequirement(name = "Bearer authentication")
-public class FriendRequestController {
+public class FriendRequestController extends RequiredAuthController {
 
     private final FriendRequestService friendRequestService;
 
@@ -44,11 +43,5 @@ public class FriendRequestController {
     @PutMapping("/cancel/{id}")
     FriendRequestOutputDto cancelFriendRequest(@PathVariable Long id) {
         return friendRequestService.cancelFriendRequest(id, getUserEntityFromContext());
-    }
-
-    private UserEntity getUserEntityFromContext() {
-        return (UserEntity) SecurityContextHolder.getContext()
-                                                 .getAuthentication()
-                                                 .getCredentials();
     }
 }

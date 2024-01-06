@@ -38,7 +38,7 @@ public class FriendRequestServiceImpl implements FriendRequestService {
         if(friendRequestRepository.existsByOtherIdAndUserId(userEntity.getUserId(), friendRequestInputDto.getOtherId())) {
             throw new ExistsException("Đã có lời mời kết bạn");
         }
-        if(friendshipRepository.existsFriend(userEntity.getUserId(), friendRequestInputDto.getOtherId())) {
+        if(friendshipRepository.existsByOtherId1AndOtherId2(userEntity.getUserId(), friendRequestInputDto.getOtherId())) {
             throw new ExistsException("Đã là bạn bè");
         }
         FriendRequestEntity friendRequestEntity = new FriendRequestEntity().setUserId(userEntity.getUserId())
@@ -54,7 +54,7 @@ public class FriendRequestServiceImpl implements FriendRequestService {
         if(!friendRequestEntity.getOtherId().equals(userEntity.getUserId())) {
             throw new ForbiddenException("Không có quyền");
         }
-        if(friendshipRepository.existsFriend(userEntity.getUserId(), friendRequestEntity.getUserId())) {
+        if(friendshipRepository.existsByOtherId1AndOtherId2(userEntity.getUserId(), friendRequestEntity.getUserId())) {
             throw new ExistsException("Đã là bạn bè");
         }
         friendRequestRepository.delete(friendRequestEntity);

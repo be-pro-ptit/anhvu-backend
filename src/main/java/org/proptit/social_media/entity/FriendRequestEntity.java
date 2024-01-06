@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import java.time.OffsetDateTime;
+
 @Data
 @Accessors(chain = true)
 @AllArgsConstructor
@@ -20,4 +22,6 @@ public class FriendRequestEntity {
     private Long userId;
     @Column(name = "other_id")
     private Long otherId;
+    @Column(name = "timestamp")
+    private OffsetDateTime timestamp;
 }
