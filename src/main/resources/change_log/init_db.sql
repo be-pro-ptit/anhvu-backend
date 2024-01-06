@@ -70,6 +70,8 @@ CREATE TABLE IF NOT EXISTS public.friendships
 ALTER TABLE public.friendships
     RENAME TO friend_requests;
 
+ALTER TABLE public.friend_requests ADD COLUMN IF NOT EXISTS "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW();
+
 CREATE TABLE IF NOT EXISTS public.friendships
 (
     id         INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY,

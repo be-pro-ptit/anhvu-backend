@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -24,7 +24,7 @@ public class UserEntity {
     @Column(name = "full_name", nullable = false)
     private String fullName;
     @Column(name = "date_of_birth")
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
     @Column(name = "phone_number")
     private String phoneNumber;
     private String email;
